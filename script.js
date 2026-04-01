@@ -8,12 +8,194 @@ const searchMovieField = document.querySelector(".header__search-field");
 
 let searchQuery = "";
 
+// Array variables
+let filteredMovies;
+let renderedMovies;
+let filteredMoviesDetails;
+
+// Index variables
+let startingIndex;
+let finalIndex;
+
+// Container variables
+let fullMoviesInfo;
+let returnedMoviesCount;
+// let existingWatchlist = getMoviesFromLocalStorage();
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Reset everything
+function resetVariables() {
+  filteredMovies = [];
+  renderedMovies = [];
+  fullMoviesInfo = [];
+  filteredMoviesDetails = [];
+  startingIndex = 0;
+  returnedMoviesCount = 0;
+}
+
 // Header buttons
 function handleRemoveBtn(action) {
   const removeBtn = document.querySelector(
     ".header__button[data-role='remove']",
   );
   removeBtn.classList[action]("is-hidden");
+}
+
+async function handleSearchBtn() {
+  if (searchMovieField.value === "") return;
+
+  searchQuery = searchMovieField.value.split(" ").join("+");
+  const fetchedMovies = await fetchMoviesData(searchQuery);
+
+  if (fetchedMovies.length === 0) return;
+
+  const sortedMovies = filterAndSortMovies(fetchedMovies);
+  fullMoviesInfo = await fetchMovieDetails(sortedMovies);
+  filteredMovies = filterMovies(fullMoviesInfo);
+  returnedMoviesCount = filteredMovies.length;
+  filteredMoviesDetails = filterMovieDetails(filteredMovies);
+
+  if (returnedMoviesCount > 0) {
+    document
+      .querySelector(".movies__no-data-image")
+      .classList.toggle("is-hidden");
+
+    const moviesBatch = getMoviesBatch(
+      filteredMoviesDetails,
+      startingIndex,
+      finalIndex,
+    );
+
+    renderedMovies = moviesBatch
+      .map((movie) => {
+        return renderMovie(movie);
+      })
+      .join("");
+
+    console.log(renderedMovies);
+  }
+}
+
+// Step 1 - fetch the data
+async function fetchMoviesData(searchQuery) {
+  try {
+    const page1Promise = fetch(
+      `https://www.omdbapi.com/?apikey=53292309&s=${searchQuery}&page=1`,
+    );
+    const page2Promise = fetch(
+      `https://www.omdbapi.com/?apikey=53292309&s=${searchQuery}&page=2`,
+    );
+
+    const page3Promise = await fetch(
+      `https://www.omdbapi.com/?apikey=53292309&s=${searchQuery}&page=3`,
+    );
+
+    const [page1, page2, page3] = await Promise.all([
+      page1Promise,
+      page2Promise,
+      page3Promise,
+    ]);
+
+    if (!page1.ok) {
+      throw new Error(`Request failed for page1: ${page1.status}`);
+    }
+    if (!page2.ok) {
+      throw new Error(`Request failed for page2: ${page2.status}`);
+    }
+    if (!page3.ok) {
+      throw new Error(`Request failed for page3: ${page3.status}`);
+    }
+    const data1 = await page1.json();
+    const data2 = await page2.json();
+    const data3 = await page3.json();
+
+    // store all the results into a single array
+    const searchResultContainer = [
+      ...(data1.Search || []), //short circuiting this; if no results are found on either of the pages, then an empty array will be returned
+      ...(data2.Search || []),
+      ...(data3.Search || []),
+    ];
+
+    return searchResultContainer;
+  } catch (error) {
+    console.log("ERROR: ", error);
+    return [];
+  }
+}
+
+// Step 2 - remove duplicates and sort by year
+function filterAndSortMovies(fetchedData) {
+  const fetchedMoviesId = new Set();
+
+  const uniqueValues = fetchedData.filter((movie) => {
+    if (fetchedMoviesId.has(movie.imdbID)) {
+      return false;
+    } else {
+      fetchedMoviesId.add(movie.imdbID);
+      return true;
+    }
+  });
+
+  // sort by year
+  uniqueValues.sort(
+    (a, b) => Number(a.Year.slice(0, 4)) - Number(b.Year.slice(0, 4)),
+  );
+  return uniqueValues;
+}
+
+// Step 3 - fetch additional movie details
+async function fetchMovieDetails(sortedMovies) {
+  const movieInformation = sortedMovies.map(async (movie) => {
+    const result = await fetch(
+      `https://www.omdbapi.com/?apikey=53292309&i=${movie.imdbID}`,
+    );
+    const data = await result.json();
+    return data;
+  });
+
+  return await Promise.all(movieInformation);
+}
+
+// Step 4 - filter out documentaries, shorts and movies without a specified duration
+function filterMovies(movieDetails) {
+  return movieDetails.filter(
+    (movie) =>
+      !movie.Genre.includes("Documentary") &&
+      !movie.Genre.includes("Short") &&
+      movie.Runtime != "N/A",
+  );
+}
+
+// Step 5 - filter out the unnecessary movie information
+function filterMovieDetails(filteredMovies) {
+  return filteredMovies.map((movie) => {
+    const { Poster, Title, imdbRating, Year, Runtime, Genre, Plot, imdbID } =
+      movie;
+    const renderedPoster = Poster === "N/A" ? "/images/noPoster.png" : Poster;
+
+    return {
+      Title: Title,
+      imdbRating: imdbRating,
+      Year: Year,
+      Runtime: Runtime,
+      Genre: Genre,
+      Plot: Plot,
+      Poster: renderedPoster,
+      imdbID: imdbID,
+    };
+  });
+}
+
+// Step 6 - get movies in batches by 10
+function getMoviesBatch(filteredData, startingIndex, finalIndex) {
+  return filteredData.slice(startingIndex, finalIndex);
+}
+
+// Step 7 - create the movie object
+function renderMovie(movie) {
+  const { Poster, Title, imdbRating, Year, Runtime, Genre, Plot, imdbID } =
+    movie;
 }
 
 // Event listeners
