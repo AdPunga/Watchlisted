@@ -8,6 +8,10 @@ const searchMovieField = document.querySelector(".header__search-field");
 const moviesContainer = document.querySelector(
   ".movies__results[data-view='search']",
 );
+const moviesSearchCount = document.querySelector(".movies__search-count");
+const loadMoreBtn = document.querySelector(
+  ".movies__button[data-role='load-more']",
+);
 
 let searchQuery = "";
 
@@ -64,6 +68,13 @@ async function handleSearchBtn() {
       .querySelector(".movies__no-data-image")
       .classList.toggle("is-hidden");
 
+    if (returnedMoviesCount <= 10) {
+      finalIndex = returnedMoviesCount;
+    } else if (returnedMoviesCount > 10) {
+      finalIndex = 10;
+      loadMoreBtn.classList.remove("is-hidden");
+    }
+
     const moviesBatch = getMoviesBatch(
       filteredMoviesDetails,
       startingIndex,
@@ -75,6 +86,9 @@ async function handleSearchBtn() {
         return renderMovie(movie);
       })
       .join("");
+
+    moviesSearchCount.textContent = `SHOWING ${returnedMoviesCount} MATCHES FOR '${searchMovieField.value.toUpperCase()}'`;
+    moviesSearchCount.classList.remove("is-hidden");
 
     renderHtml(renderedMovies);
   }
@@ -278,4 +292,26 @@ searchMovieField.addEventListener("input", () => {
 searchForm.addEventListener("submit", (e) => {
   e.preventDefault();
   handleSearchBtn();
+});
+
+document.querySelector(".movies__tabs").addEventListener("click", (e) => {
+  const movieTab = e.target.closest(".movies__tab");
+  const tabView = movieTab.dataset.view;
+
+  if (!movieTab) return;
+
+  document.querySelectorAll(".movies__tab").forEach((movieTab) => {
+    console.log(movieTab);
+    movieTab.classList.remove("is-active");
+  });
+
+  movieTab.classList.add("is-active");
+
+  document.querySelectorAll(".movies__results").forEach((appScreen) => {
+    appScreen.classList.remove("is-active");
+  });
+
+  document
+    .querySelector(`.movies__results[data-view="${tabView}"]`)
+    .classList.add("is-active");
 });
