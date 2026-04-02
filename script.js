@@ -5,6 +5,9 @@ const headerButtonContainer = document.querySelector(
   ".header__button-container",
 );
 const searchMovieField = document.querySelector(".header__search-field");
+const moviesContainer = document.querySelector(
+  ".movies__results[data-view='search']",
+);
 
 let searchQuery = "";
 
@@ -73,7 +76,7 @@ async function handleSearchBtn() {
       })
       .join("");
 
-    console.log(renderedMovies);
+    renderHtml(renderedMovies);
   }
 }
 
@@ -196,6 +199,59 @@ function getMoviesBatch(filteredData, startingIndex, finalIndex) {
 function renderMovie(movie) {
   const { Poster, Title, imdbRating, Year, Runtime, Genre, Plot, imdbID } =
     movie;
+
+  return `<article class="movie">
+              <div class="movie__media">
+                <img src="${Poster}" alt="" class="movie__poster" />
+              </div>
+
+              <div class="movie__content">
+                <div class="movie__details">
+                  <h3 class="movie__title">${Title}</h3>
+
+                  <div class="movie__information">
+                    <p class="movie__year">${Year}</p>
+                    <i class="fa-solid fa-circle"></i>
+                    <p class="movie__duration">${Runtime}</p>
+                    <i class="fa-solid fa-circle"></i>
+                    <p class="movie__genre">${Genre}</p>
+                  </div>
+
+                  <p class="movie__plot">${Plot}</p>
+                </div>
+
+                <div class="movie__controls">
+                  <div class="movie__rating-box">
+                    <i class="fa-solid fa-star"></i>
+                    <p class="movie__rating">${imdbRating}</p>
+                  </div>
+
+                  <button
+                    class="movie__add-watchlist-btn"
+                    data-imdbID="${imdbID}"
+                    id="movie__add-watchlist-btn"
+                  >
+                    <i class="fa-solid fa-circle-plus"></i>
+                    <span class="movie__btn-label">Watchlist</span>
+                  </button>
+                </div>
+              </div>
+            </article>`;
+}
+
+// Step 8 - render the HTML
+function renderHtml(renderedMoviesObject) {
+  moviesContainer.innerHTML = renderedMoviesObject;
+  replaceErroredPosters();
+}
+
+// Step 9 - Replace missing posters
+function replaceErroredPosters() {
+  document.querySelectorAll(".movie__poster").forEach((img) => {
+    img.addEventListener("error", (e) => {
+      e.target.src = "/images/noPoster.png";
+    });
+  });
 }
 
 // Event listeners
