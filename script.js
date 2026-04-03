@@ -14,6 +14,7 @@ const loadMoreBtn = document.querySelector(
 );
 
 let searchQuery = "";
+let appState = "search";
 
 // Array variables
 let filteredMovies;
@@ -91,6 +92,24 @@ async function handleSearchBtn() {
     moviesSearchCount.classList.remove("is-hidden");
 
     renderHtml(renderedMovies);
+
+    if (appState != "search") {
+      document
+        .querySelector('.movies__results[data-view="search"]')
+        .classList.add("is-active");
+
+      document
+        .querySelector('.movies__results[data-view="watchlist"]')
+        .classList.remove("is-active");
+
+      document
+        .querySelector('.movies__tab[data-view="search"]')
+        .classList.add("is-active");
+
+      document
+        .querySelector('.movies__tab[data-view="watchlist"]')
+        .classList.remove("is-active");
+    }
   }
 }
 
@@ -297,11 +316,11 @@ searchForm.addEventListener("submit", (e) => {
 document.querySelector(".movies__tabs").addEventListener("click", (e) => {
   const movieTab = e.target.closest(".movies__tab");
   const tabView = movieTab.dataset.view;
+  appState = tabView;
 
   if (!movieTab) return;
 
   document.querySelectorAll(".movies__tab").forEach((movieTab) => {
-    console.log(movieTab);
     movieTab.classList.remove("is-active");
   });
 
