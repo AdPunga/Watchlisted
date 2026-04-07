@@ -14,7 +14,8 @@ const loadMoreBtn = document.querySelector(
 );
 
 let searchQuery = "";
-let appState = "search";
+let appState = "";
+let loadMoreBtnState = "";
 
 // Array variables
 let filteredMovies;
@@ -30,7 +31,7 @@ let fullMoviesInfo;
 let returnedMoviesCount;
 // let existingWatchlist = getMoviesFromLocalStorage();
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Reset everything
 function resetVariables() {
@@ -40,6 +41,7 @@ function resetVariables() {
   filteredMoviesDetails = [];
   startingIndex = 0;
   returnedMoviesCount = 0;
+  loadMoreBtnState = "";
 }
 
 // Header buttons
@@ -52,6 +54,8 @@ function handleRemoveBtn(action) {
 
 async function handleSearchBtn() {
   if (searchMovieField.value === "") return;
+
+  resetVariables();
 
   searchQuery = searchMovieField.value.split(" ").join("+");
   const fetchedMovies = await fetchMoviesData(searchQuery);
@@ -73,7 +77,7 @@ async function handleSearchBtn() {
       finalIndex = returnedMoviesCount;
     } else if (returnedMoviesCount > 10) {
       finalIndex = 10;
-      loadMoreBtn.classList.remove("is-hidden");
+      handleElementVisibility(loadMoreBtn, "remove");
     }
 
     const moviesBatch = getMoviesBatch(
@@ -89,7 +93,6 @@ async function handleSearchBtn() {
       .join("");
 
     moviesSearchCount.textContent = `SHOWING ${returnedMoviesCount} MATCHES FOR '${searchMovieField.value.toUpperCase()}'`;
-    moviesSearchCount.classList.remove("is-hidden");
 
     renderHtml(renderedMovies);
 
@@ -110,7 +113,39 @@ async function handleSearchBtn() {
         .querySelector('.movies__tab[data-view="watchlist"]')
         .classList.remove("is-active");
     }
+    handleElementVisibility(moviesSearchCount, "remove");
   }
+}
+
+async function handleLoadMoreBtn() {
+  startingIndex = finalIndex;
+
+  if (returnedMoviesCount <= 20) {
+    finalIndex = returnedMoviesCount; //21
+    handleElementVisibility(loadMoreBtn, "add");
+  }
+
+  if (returnedMoviesCount > 20 && loadMoreBtnState != "hidden") {
+    finalIndex += 10;
+  } else {
+    finalIndex = returnedMoviesCount;
+    handleElementVisibility(loadMoreBtn, "add");
+    loadMoreBtnState = "hidden";
+  }
+
+  const moviesBatch = getMoviesBatch(
+    filteredMoviesDetails,
+    startingIndex,
+    finalIndex,
+  );
+
+  const additionalMovies = moviesBatch
+    .map((movie) => {
+      return renderMovie(movie);
+    })
+    .join("");
+
+  loadMoreMovies(additionalMovies);
 }
 
 // Step 1 - fetch the data
@@ -287,6 +322,14 @@ function replaceErroredPosters() {
   });
 }
 
+function handleElementVisibility(element, action) {
+  element.classList[action]("is-hidden");
+}
+
+function loadMoreMovies(renderedHtml) {
+  moviesContainer.insertAdjacentHTML("beforeend", renderedHtml);
+}
+
 // Event listeners
 
 searchForm.addEventListener("click", (e) => {
@@ -313,6 +356,10 @@ searchForm.addEventListener("submit", (e) => {
   handleSearchBtn();
 });
 
+loadMoreBtn.addEventListener("click", () => {
+  handleLoadMoreBtn();
+});
+
 document.querySelector(".movies__tabs").addEventListener("click", (e) => {
   const movieTab = e.target.closest(".movies__tab");
   const tabView = movieTab.dataset.view;
@@ -333,4 +380,14 @@ document.querySelector(".movies__tabs").addEventListener("click", (e) => {
   document
     .querySelector(`.movies__results[data-view="${tabView}"]`)
     .classList.add("is-active");
+
+  returnedMoviesCount > 0 && appState === "search"
+    ? handleElementVisibility(moviesSearchCount, "remove")
+    : handleElementVisibility(moviesSearchCount, "add");
+
+  if (appState === "search" && loadMoreBtnState != "hidden") {
+    handleElementVisibility(loadMoreBtn, "remove");
+  } else {
+    handleElementVisibility(loadMoreBtn, "add");
+  }
 });
