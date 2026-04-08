@@ -15,11 +15,10 @@ const loadMoreBtn = document.querySelector(
 
 let searchQuery = "";
 let appState = "";
-let loadMoreBtnState = "";
+let renderedMovies = "";
 
 // Array variables
 let filteredMovies;
-let renderedMovies;
 let filteredMoviesDetails;
 
 // Index variables
@@ -31,17 +30,22 @@ let fullMoviesInfo;
 let returnedMoviesCount;
 // let existingWatchlist = getMoviesFromLocalStorage();
 
+const shouldShowLoadMore =
+  appState === "search" &&
+  returnedMoviesCount > 10 &&
+  finalIndex < returnedMoviesCount;
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Reset everything
 function resetVariables() {
   filteredMovies = [];
-  renderedMovies = [];
+  renderedMovies = "";
   fullMoviesInfo = [];
   filteredMoviesDetails = [];
   startingIndex = 0;
   returnedMoviesCount = 0;
-  loadMoreBtnState = "";
+  loadMoreBtn.dataset.clicks = 0;
 }
 
 // Header buttons
@@ -56,6 +60,8 @@ async function handleSearchBtn() {
   if (searchMovieField.value === "") return;
 
   resetVariables();
+
+  let appState = "search";
 
   searchQuery = searchMovieField.value.split(" ").join("+");
   const fetchedMovies = await fetchMoviesData(searchQuery);
@@ -77,7 +83,7 @@ async function handleSearchBtn() {
       finalIndex = returnedMoviesCount;
     } else if (returnedMoviesCount > 10) {
       finalIndex = 10;
-      handleElementVisibility(loadMoreBtn, "remove");
+      // handleElementVisibility(loadMoreBtn, "remove");
     }
 
     const moviesBatch = getMoviesBatch(
@@ -114,24 +120,45 @@ async function handleSearchBtn() {
         .classList.remove("is-active");
     }
     handleElementVisibility(moviesSearchCount, "remove");
+
+    handleElementVisibility(
+      loadMoreBtn,
+      appState === "search" &&
+        returnedMoviesCount > 10 &&
+        finalIndex < returnedMoviesCount
+        ? "remove"
+        : "add",
+    );
   }
 }
 
 async function handleLoadMoreBtn() {
   startingIndex = finalIndex;
+  loadMoreBtn.dataset.clicks = Number(loadMoreBtn.dataset.clicks) + 1;
 
-  if (returnedMoviesCount <= 20) {
-    finalIndex = returnedMoviesCount; //21
-    handleElementVisibility(loadMoreBtn, "add");
-  }
-
-  if (returnedMoviesCount > 20 && loadMoreBtnState != "hidden") {
-    finalIndex += 10;
-  } else {
+  if (startingIndex + 10 >= returnedMoviesCount) {
     finalIndex = returnedMoviesCount;
-    handleElementVisibility(loadMoreBtn, "add");
-    loadMoreBtnState = "hidden";
+    console.log("Condition 1");
   }
+
+  if (startingIndex + 10 < returnedMoviesCount) {
+    finalIndex += 10;
+    console.log("Condition 2");
+  }
+
+  // if (returnedMoviesCount <= 20) {
+  //   finalIndex = returnedMoviesCount;
+  //   // handleElementVisibility(loadMoreBtn, "add");
+  // }
+
+  // if (returnedMoviesCount > 20) {
+  //   if (loadMoreBtn.dataset.clicks === "1") {
+  //     finalIndex += 10;
+  //   } else {
+  //     finalIndex = returnedMoviesCount;
+  //     handleElementVisibility(loadMoreBtn, "add");
+  //   }
+  // }
 
   const moviesBatch = getMoviesBatch(
     filteredMoviesDetails,
@@ -146,6 +173,15 @@ async function handleLoadMoreBtn() {
     .join("");
 
   loadMoreMovies(additionalMovies);
+
+  handleElementVisibility(
+    loadMoreBtn,
+    appState === "search" &&
+      returnedMoviesCount > 10 &&
+      finalIndex < returnedMoviesCount
+      ? "remove"
+      : "add",
+  );
 }
 
 // Step 1 - fetch the data
@@ -158,7 +194,7 @@ async function fetchMoviesData(searchQuery) {
       `https://www.omdbapi.com/?apikey=53292309&s=${searchQuery}&page=2`,
     );
 
-    const page3Promise = await fetch(
+    const page3Promise = fetch(
       `https://www.omdbapi.com/?apikey=53292309&s=${searchQuery}&page=3`,
     );
 
@@ -297,7 +333,6 @@ function renderMovie(movie) {
                   <button
                     class="movie__add-watchlist-btn"
                     data-imdbID="${imdbID}"
-                    id="movie__add-watchlist-btn"
                   >
                     <i class="fa-solid fa-circle-plus"></i>
                     <span class="movie__btn-label">Watchlist</span>
@@ -328,6 +363,7 @@ function handleElementVisibility(element, action) {
 
 function loadMoreMovies(renderedHtml) {
   moviesContainer.insertAdjacentHTML("beforeend", renderedHtml);
+  replaceErroredPosters();
 }
 
 // Event listeners
@@ -385,9 +421,9 @@ document.querySelector(".movies__tabs").addEventListener("click", (e) => {
     ? handleElementVisibility(moviesSearchCount, "remove")
     : handleElementVisibility(moviesSearchCount, "add");
 
-  if (appState === "search" && loadMoreBtnState != "hidden") {
-    handleElementVisibility(loadMoreBtn, "remove");
-  } else {
+  if (appState === "watchlist" || finalIndex === returnedMoviesCount) {
     handleElementVisibility(loadMoreBtn, "add");
+  } else {
+    handleElementVisibility(loadMoreBtn, "remove");
   }
 });
