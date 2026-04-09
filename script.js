@@ -14,7 +14,7 @@ const loadMoreBtn = document.querySelector(
 );
 
 let searchQuery = "";
-let appState = "";
+let appState = "search";
 let renderedMovies = "";
 
 // Array variables
@@ -30,11 +30,6 @@ let fullMoviesInfo;
 let returnedMoviesCount;
 // let existingWatchlist = getMoviesFromLocalStorage();
 
-const shouldShowLoadMore =
-  appState === "search" &&
-  returnedMoviesCount > 10 &&
-  finalIndex < returnedMoviesCount;
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Reset everything
@@ -45,7 +40,6 @@ function resetVariables() {
   filteredMoviesDetails = [];
   startingIndex = 0;
   returnedMoviesCount = 0;
-  loadMoreBtn.dataset.clicks = 0;
 }
 
 // Header buttons
@@ -61,7 +55,7 @@ async function handleSearchBtn() {
 
   resetVariables();
 
-  let appState = "search";
+  appState = "search";
 
   searchQuery = searchMovieField.value.split(" ").join("+");
   const fetchedMovies = await fetchMoviesData(searchQuery);
@@ -120,7 +114,6 @@ async function handleSearchBtn() {
         .classList.remove("is-active");
     }
     handleElementVisibility(moviesSearchCount, "remove");
-
     handleElementVisibility(
       loadMoreBtn,
       appState === "search" &&
@@ -134,31 +127,14 @@ async function handleSearchBtn() {
 
 async function handleLoadMoreBtn() {
   startingIndex = finalIndex;
-  loadMoreBtn.dataset.clicks = Number(loadMoreBtn.dataset.clicks) + 1;
 
   if (startingIndex + 10 >= returnedMoviesCount) {
     finalIndex = returnedMoviesCount;
-    console.log("Condition 1");
   }
 
   if (startingIndex + 10 < returnedMoviesCount) {
     finalIndex += 10;
-    console.log("Condition 2");
   }
-
-  // if (returnedMoviesCount <= 20) {
-  //   finalIndex = returnedMoviesCount;
-  //   // handleElementVisibility(loadMoreBtn, "add");
-  // }
-
-  // if (returnedMoviesCount > 20) {
-  //   if (loadMoreBtn.dataset.clicks === "1") {
-  //     finalIndex += 10;
-  //   } else {
-  //     finalIndex = returnedMoviesCount;
-  //     handleElementVisibility(loadMoreBtn, "add");
-  //   }
-  // }
 
   const moviesBatch = getMoviesBatch(
     filteredMoviesDetails,
