@@ -28,7 +28,7 @@ let finalIndex;
 // Container variables
 let fullMoviesInfo;
 let returnedMoviesCount;
-// let existingWatchlist = getMoviesFromLocalStorage();
+let existingWatchlist = getMoviesFromLocalStorage();
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -54,8 +54,6 @@ async function handleSearchBtn() {
   if (searchMovieField.value === "") return;
 
   resetVariables();
-
-  appState = "search";
 
   searchQuery = searchMovieField.value.split(" ").join("+");
   const fetchedMovies = await fetchMoviesData(searchQuery);
@@ -97,6 +95,8 @@ async function handleSearchBtn() {
     renderHtml(renderedMovies);
 
     if (appState != "search") {
+      appState = "search";
+
       document
         .querySelector('.movies__results[data-view="search"]')
         .classList.add("is-active");
@@ -113,7 +113,9 @@ async function handleSearchBtn() {
         .querySelector('.movies__tab[data-view="watchlist"]')
         .classList.remove("is-active");
     }
+
     handleElementVisibility(moviesSearchCount, "remove");
+
     handleElementVisibility(
       loadMoreBtn,
       appState === "search" &&
@@ -308,6 +310,7 @@ function renderMovie(movie) {
 
                   <button
                     class="movie__add-watchlist-btn"
+                    aria-label="Add to watchlist"
                     data-imdbID="${imdbID}"
                   >
                     <i class="fa-solid fa-circle-plus"></i>
@@ -342,6 +345,71 @@ function loadMoreMovies(renderedHtml) {
   replaceErroredPosters();
 }
 
+// Local Storage
+
+function getMoviesFromLocalStorage() {
+  const existingWatchlistMovies = localStorage.getItem("watchlistMovies");
+
+  const moviesArray = existingWatchlistMovies
+    ? JSON.parse(existingWatchlistMovies)
+    : [];
+
+  return moviesArray;
+}
+
+function addToWatchlistArray(movie, watchlistArray) {
+  watchlistArray.push(movie);
+
+  return watchlistArray;
+}
+
+function updateLocalStorage(watchlistArray) {
+  const stringifiedArray = JSON.stringify(watchlistArray);
+
+  return localStorage.setItem("watchlistMovies", stringifiedArray);
+}
+
+// Add to watchlist button
+if (appState === "search") {
+  moviesContainer.addEventListener("click", (e) => {
+    const watchlistBtn = e.target.closest(".movie__add-watchlist-btn");
+    if (!watchlistBtn) return;
+
+    // const currentMovieID = watchlistBtn.dataset.imdbid;
+
+    // const currentMovie = filteredMoviesDetails.filter((movie) => {
+    //   return movie.imdbID === currentMovieID;
+    // })[0];
+
+    // const updatedWatchlistArray = addToWatchlistArray(
+    //   currentMovie,
+    //   existingWatchlist,
+    // );
+
+    watchlistBtn.innerHTML = `<i class="fa-solid fa-circle-check"></i> Added!`;
+
+    // updateLocalStorage(updatedWatchlistArray);
+    console.log(watchlistBtn);
+
+    // if (e.target.dataset.imdbid) {
+
+    //   const thisMovie = fetchedMoviesFilteredInfo.filter((movie) => {
+    //     return movie.imdbID === e.target.dataset.imdbid;
+    //   })[0];
+
+    //   const updatedWatchlistArray = addMovieToLocalStorage(
+    //     thisMovie,
+    //     existingWatchlist,
+    //   );
+    //   e.target.innerHTML = `<i class="fa-solid fa-circle-check"></i> Added!`;
+    //   setTimeout(() => {
+    //     e.target.classList.add("fade-out");
+    //   }, 1500);
+    //   updateLocalStorage(updatedWatchlistArray);
+    // }
+  });
+}
+
 // Event listeners
 
 searchForm.addEventListener("click", (e) => {
@@ -374,10 +442,10 @@ loadMoreBtn.addEventListener("click", () => {
 
 document.querySelector(".movies__tabs").addEventListener("click", (e) => {
   const movieTab = e.target.closest(".movies__tab");
+  if (!movieTab) return;
+
   const tabView = movieTab.dataset.view;
   appState = tabView;
-
-  if (!movieTab) return;
 
   document.querySelectorAll(".movies__tab").forEach((movieTab) => {
     movieTab.classList.remove("is-active");

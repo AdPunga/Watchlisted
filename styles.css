@@ -209,7 +209,7 @@ body {
 }
 
 .movie:hover {
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  box-shadow: rgba(0, 0, 0, 0.35) 1px 4px 9px;
 }
 
 /* .movie:not(:last-child) {
@@ -236,9 +236,9 @@ body {
   min-height: 0;
 }
 
-.movie__details * {
-  /* outline: 1px solid red; */
-}
+/* .movie__details * {
+  outline: 1px solid red;
+} */
 
 .movie__details {
   display: flex;
