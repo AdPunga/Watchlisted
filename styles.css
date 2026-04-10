@@ -314,7 +314,7 @@ body {
 
 .movie__add-watchlist-btn:hover {
   background-color: #f1f1f1;
-  border: 1px solid #ebebeb;
+  border: 1px solid #eeeeee;
 }
 
 .movie__add-watchlist-btn i {
@@ -325,8 +325,13 @@ body {
   transform: scale(1.15);
 }
 
-.movie__btn-label {
+.movie__btn-label,
+.movie__watchlist-status {
   font-size: clamp(12px, 1.9vw, 14px);
+}
+
+.movie__watchlist-status {
+  color: green;
 }
 
 .movies__button {
@@ -344,9 +349,13 @@ body {
 
 .movies__button:hover {
   background-color: #f1f1f1;
-  border: 1px solid #ebebeb;
+  border: 1px solid #eeeeee;
 }
 
 .is-hidden {
   display: none;
+}
+
+.is-removing {
+  opacity: 0;
 }

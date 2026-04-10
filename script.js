@@ -84,15 +84,7 @@ async function handleSearchBtn() {
       finalIndex,
     );
 
-    renderedMovies = moviesBatch
-      .map((movie) => {
-        return renderMovie(movie);
-      })
-      .join("");
-
     moviesSearchCount.textContent = `SHOWING ${returnedMoviesCount} MATCHES FOR '${searchMovieField.value.toUpperCase()}'`;
-
-    renderHtml(renderedMovies);
 
     if (appState != "search") {
       appState = "search";
@@ -114,7 +106,14 @@ async function handleSearchBtn() {
         .classList.remove("is-active");
     }
 
+    renderedMovies = moviesBatch
+      .map((movie) => {
+        return renderMovie(movie);
+      })
+      .join("");
+
     handleElementVisibility(moviesSearchCount, "remove");
+    renderHtml(renderedMovies);
 
     handleElementVisibility(
       loadMoreBtn,
@@ -277,7 +276,36 @@ function getMoviesBatch(filteredData, startingIndex, finalIndex) {
   return filteredData.slice(startingIndex, finalIndex);
 }
 
-// Step 7 - create the movie object
+// Step 7 - decide the value of add to watchlist button
+function renderAddToWatchlistBtn(movie, movieID) {
+  const isInWatchlist = existingWatchlist.some((item) => {
+    return item.imdbID === movieID;
+  });
+
+  if (appState === "search" && isInWatchlist)
+    return `<span class="movie__watchlist-status" aria-label="Already in watchlist"><i class="fa-solid fa-circle-check"></i> Watchlisted</span>`;
+
+  const ariaLabelValue = isInWatchlist
+    ? "Remove from watchlist"
+    : "Add to watchlist";
+  const iconValue = isInWatchlist ? "minus" : "plus";
+  const labelValue = isInWatchlist ? "Remove" : "Watchlist";
+
+  const addToWatchlistBtn = `
+    <button
+      class="movie__add-watchlist-btn"
+      aria-label="${ariaLabelValue}"
+      data-imdbID="${movie.imdbID}"
+    >
+      <i class="fa-solid fa-circle-${iconValue}"></i>
+      <span class="movie__btn-label">${labelValue}</span>
+    </button>
+  `;
+
+  return addToWatchlistBtn;
+}
+
+// Step 8 - create the movie object
 function renderMovie(movie) {
   const { Poster, Title, imdbRating, Year, Runtime, Genre, Plot, imdbID } =
     movie;
@@ -308,26 +336,19 @@ function renderMovie(movie) {
                     <p class="movie__rating">${imdbRating}</p>
                   </div>
 
-                  <button
-                    class="movie__add-watchlist-btn"
-                    aria-label="Add to watchlist"
-                    data-imdbID="${imdbID}"
-                  >
-                    <i class="fa-solid fa-circle-plus"></i>
-                    <span class="movie__btn-label">Watchlist</span>
-                  </button>
+                  ${renderAddToWatchlistBtn(movie, imdbID)}
                 </div>
               </div>
             </article>`;
 }
 
-// Step 8 - render the HTML
+// Step 9 - render the HTML
 function renderHtml(renderedMoviesObject) {
   moviesContainer.innerHTML = renderedMoviesObject;
   replaceErroredPosters();
 }
 
-// Step 9 - Replace missing posters
+// Step 10 - Replace missing posters
 function replaceErroredPosters() {
   document.querySelectorAll(".movie__poster").forEach((img) => {
     img.addEventListener("error", (e) => {
@@ -340,6 +361,7 @@ function handleElementVisibility(element, action) {
   element.classList[action]("is-hidden");
 }
 
+// Load more movies in the DOM
 function loadMoreMovies(renderedHtml) {
   moviesContainer.insertAdjacentHTML("beforeend", renderedHtml);
   replaceErroredPosters();
@@ -375,38 +397,24 @@ if (appState === "search") {
     const watchlistBtn = e.target.closest(".movie__add-watchlist-btn");
     if (!watchlistBtn) return;
 
-    // const currentMovieID = watchlistBtn.dataset.imdbid;
+    const currentMovieID = watchlistBtn.dataset.imdbid;
 
-    // const currentMovie = filteredMoviesDetails.filter((movie) => {
-    //   return movie.imdbID === currentMovieID;
-    // })[0];
+    const currentMovie = filteredMoviesDetails.filter((movie) => {
+      return movie.imdbID === currentMovieID;
+    })[0];
 
-    // const updatedWatchlistArray = addToWatchlistArray(
-    //   currentMovie,
-    //   existingWatchlist,
-    // );
+    const updatedWatchlistArray = addToWatchlistArray(
+      currentMovie,
+      existingWatchlist,
+    );
 
     watchlistBtn.innerHTML = `<i class="fa-solid fa-circle-check"></i> Added!`;
 
-    // updateLocalStorage(updatedWatchlistArray);
-    console.log(watchlistBtn);
+    // setTimeout(() => {
+    //   watchlistBtn.classList.add("is-removing");
+    // }, 1000);
 
-    // if (e.target.dataset.imdbid) {
-
-    //   const thisMovie = fetchedMoviesFilteredInfo.filter((movie) => {
-    //     return movie.imdbID === e.target.dataset.imdbid;
-    //   })[0];
-
-    //   const updatedWatchlistArray = addMovieToLocalStorage(
-    //     thisMovie,
-    //     existingWatchlist,
-    //   );
-    //   e.target.innerHTML = `<i class="fa-solid fa-circle-check"></i> Added!`;
-    //   setTimeout(() => {
-    //     e.target.classList.add("fade-out");
-    //   }, 1500);
-    //   updateLocalStorage(updatedWatchlistArray);
-    // }
+    updateLocalStorage(updatedWatchlistArray);
   });
 }
 
