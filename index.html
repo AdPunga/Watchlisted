@@ -23,8 +23,8 @@
     <div class="wrapper">
       <header class="header">
         <div class="header__logo-container">
-          <img src="./images/cameraLogo.png" class="header__logo" />
-          <h1 class="header__app-title">Watchlisted</h1>
+          <i class="fa-solid fa-film header__logo"></i>
+          <h1 class="header__app-title">Watch<span>listed</span></h1>
         </div>
 
         <form class="header__search-control">
@@ -70,8 +70,10 @@
               Watchlist
             </button>
           </nav>
-          <h2 class="movies__search-count is-hidden"></h2>
         </div>
+
+        <h2 class="movies__search-count is-hidden"></h2>
+
         <div class="movies__content">
           <div class="movies__results is-active" data-view="search">
             <!-- <img
@@ -107,103 +109,16 @@
                     <i class="fa-solid fa-star"></i>
                     <p class="movie__rating">9.1</p>
                   </div>
-
-                  <span class="movie__watchlist-status"
-                    ><i class="fa-solid fa-circle-check"></i> Watchlisted</span
-                  >
+                  <div class="movie__button-box">
+                    <span class="movie__watchlist-status"
+                      ><i class="fa-solid fa-circle-check"></i>
+                      Watchlisted</span
+                    >
+                  </div>
                 </div>
               </div>
             </article>
 
-            <article class="movie">
-              <div class="movie__media">
-                <img src="./images/br.png" alt="" class="movie__poster" />
-              </div>
-
-              <div class="movie__content">
-                <div class="movie__details">
-                  <h3 class="movie__title">The Dark Knight</h3>
-
-                  <div class="movie__information">
-                    <p class="movie__year">2008</p>
-                    <i class="fa-solid fa-circle"></i>
-                    <p class="movie__duration">152m</p>
-                    <i class="fa-solid fa-circle"></i>
-                    <p class="movie__genre">Action, Crime, Drama</p>
-                  </div>
-
-                  <p class="movie__plot">
-                    When a menace known as the Joker wreaks havoc and chaos on
-                    the people of Gotham, Batman, James Gordon and Harvey Dent
-                    must work together to put an end to the madness.
-                  </p>
-                </div>
-
-                <div class="movie__controls">
-                  <div class="movie__rating-box">
-                    <i class="fa-solid fa-star"></i>
-                    <p class="movie__rating">9.1</p>
-                  </div>
-
-                  <button
-                    class="movie__add-watchlist-btn"
-                    aria-label="Add to watchlist"
-                    data-imdbID="4b161eee-c0f5-4545-9c4b-8562944223ee"
-                  >
-                    <i class="fa-solid fa-circle-plus"></i>
-                    <span class="movie__btn-label">Watchlist</span>
-                  </button>
-                </div>
-              </div>
-            </article>
-
-            <article class="movie">
-              <div class="movie__media">
-                <img src="./images/br.png" alt="" class="movie__poster" />
-              </div>
-
-              <div class="movie__content">
-                <div class="movie__details">
-                  <h3 class="movie__title">The Dark Knight</h3>
-
-                  <div class="movie__information">
-                    <p class="movie__year">2008</p>
-                    <i class="fa-solid fa-circle"></i>
-                    <p class="movie__duration">152m</p>
-                    <i class="fa-solid fa-circle"></i>
-                    <p class="movie__genre">Action, Crime, Drama</p>
-                  </div>
-
-                  <p class="movie__plot">
-                    When a menace known as the Joker wreaks havoc and chaos on
-                    the people of Gotham, Batman, James Gordon and Harvey Dent
-                    must work together to put an end to the madness.
-                  </p>
-                </div>
-
-                <div class="movie__controls">
-                  <div class="movie__rating-box">
-                    <i class="fa-solid fa-star"></i>
-                    <p class="movie__rating">9.1</p>
-                  </div>
-
-                  <button
-                    class="movie__add-watchlist-btn"
-                    aria-label="Add to watchlist"
-                    data-imdbID="4b161eee-c0f5-4545-9c4b-8562944223ee"
-                  >
-                    <i class="fa-solid fa-circle-plus"></i>
-                    <span class="movie__btn-label">Watchlist</span>
-                  </button>
-                </div>
-              </div>
-            </article>
-          </div>
-          <div class="movies__results" data-view="watchlist">
-            <img
-              src="./images/no-data-initial.png"
-              class="movies__no-data-image"
-            />
             <!-- <article class="movie">
               <div class="movie__media">
                 <img src="./images/br.png" alt="" class="movie__poster" />
@@ -234,17 +149,20 @@
                     <p class="movie__rating">9.1</p>
                   </div>
 
-                  <button
-                    class="movie__add-watchlist-btn"
-                    data-imdbID="4b161eee-c0f5-4545-9c4b-8562944223ee"
-                    id="movie__add-watchlist-btn"
-                  >
-                    <i class="fa-solid fa-circle-plus"></i>
-                    <span class="movie__btn-label">Watchlist</span>
-                  </button>
+                  <div class="movie__button-box">
+                    <button
+                      class="movie__add-watchlist-btn"
+                      aria-label="Add to watchlist"
+                      data-imdbID="4b161eee-c0f5-4545-9c4b-8562944223ee"
+                    >
+                      <i class="fa-solid fa-circle-plus"></i>
+                      <span class="movie__btn-label">Watchlist</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </article>
+
             <article class="movie">
               <div class="movie__media">
                 <img src="./images/br.png" alt="" class="movie__poster" />
@@ -275,17 +193,289 @@
                     <p class="movie__rating">9.1</p>
                   </div>
 
-                  <button
-                    class="movie__add-watchlist-btn"
-                    data-imdbID="4b161eee-c0f5-4545-9c4b-8562944223ee"
-                    id="movie__add-watchlist-btn"
-                  >
-                    <i class="fa-solid fa-circle-plus"></i>
-                    <span class="movie__btn-label">Watchlist</span>
-                  </button>
+                  <div class="movie__button-box">
+                    <button
+                      class="movie__add-watchlist-btn"
+                      aria-label="Add to watchlist"
+                      data-imdbID="4b161eee-c0f5-4545-9c4b-8562944223ee"
+                    >
+                      <i class="fa-solid fa-circle-plus"></i>
+                      <span class="movie__btn-label">Watchlist</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="movie">
+              <div class="movie__media">
+                <img src="./images/br.png" alt="" class="movie__poster" />
+              </div>
+
+              <div class="movie__content">
+                <div class="movie__details">
+                  <h3 class="movie__title">The Dark Knight</h3>
+
+                  <div class="movie__information">
+                    <p class="movie__year">2008</p>
+                    <i class="fa-solid fa-circle"></i>
+                    <p class="movie__duration">152m</p>
+                    <i class="fa-solid fa-circle"></i>
+                    <p class="movie__genre">Action, Crime, Drama</p>
+                  </div>
+
+                  <p class="movie__plot">
+                    When a menace known as the Joker wreaks havoc and chaos on
+                    the people of Gotham, Batman, James Gordon and Harvey Dent
+                    must work together to put an end to the madness.
+                  </p>
+                </div>
+
+                <div class="movie__controls">
+                  <div class="movie__rating-box">
+                    <i class="fa-solid fa-star"></i>
+                    <p class="movie__rating">9.1</p>
+                  </div>
+
+                  <div class="movie__button-box">
+                    <button
+                      class="movie__add-watchlist-btn"
+                      aria-label="Add to watchlist"
+                      data-imdbID="4b161eee-c0f5-4545-9c4b-8562944223ee"
+                    >
+                      <i class="fa-solid fa-circle-plus"></i>
+                      <span class="movie__btn-label">Watchlist</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="movie">
+              <div class="movie__media">
+                <img src="./images/br.png" alt="" class="movie__poster" />
+              </div>
+
+              <div class="movie__content">
+                <div class="movie__details">
+                  <h3 class="movie__title">The Dark Knight</h3>
+
+                  <div class="movie__information">
+                    <p class="movie__year">2008</p>
+                    <i class="fa-solid fa-circle"></i>
+                    <p class="movie__duration">152m</p>
+                    <i class="fa-solid fa-circle"></i>
+                    <p class="movie__genre">Action, Crime, Drama</p>
+                  </div>
+
+                  <p class="movie__plot">
+                    When a menace known as the Joker wreaks havoc and chaos on
+                    the people of Gotham, Batman, James Gordon and Harvey Dent
+                    must work together to put an end to the madness.
+                  </p>
+                </div>
+
+                <div class="movie__controls">
+                  <div class="movie__rating-box">
+                    <i class="fa-solid fa-star"></i>
+                    <p class="movie__rating">9.1</p>
+                  </div>
+
+                  <div class="movie__button-box">
+                    <button
+                      class="movie__add-watchlist-btn"
+                      aria-label="Add to watchlist"
+                      data-imdbID="4b161eee-c0f5-4545-9c4b-8562944223ee"
+                    >
+                      <i class="fa-solid fa-circle-plus"></i>
+                      <span class="movie__btn-label">Watchlist</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="movie">
+              <div class="movie__media">
+                <img src="./images/br.png" alt="" class="movie__poster" />
+              </div>
+
+              <div class="movie__content">
+                <div class="movie__details">
+                  <h3 class="movie__title">The Dark Knight</h3>
+
+                  <div class="movie__information">
+                    <p class="movie__year">2008</p>
+                    <i class="fa-solid fa-circle"></i>
+                    <p class="movie__duration">152m</p>
+                    <i class="fa-solid fa-circle"></i>
+                    <p class="movie__genre">Action, Crime, Drama</p>
+                  </div>
+
+                  <p class="movie__plot">
+                    When a menace known as the Joker wreaks havoc and chaos on
+                    the people of Gotham, Batman, James Gordon and Harvey Dent
+                    must work together to put an end to the madness.
+                  </p>
+                </div>
+
+                <div class="movie__controls">
+                  <div class="movie__rating-box">
+                    <i class="fa-solid fa-star"></i>
+                    <p class="movie__rating">9.1</p>
+                  </div>
+
+                  <div class="movie__button-box">
+                    <button
+                      class="movie__add-watchlist-btn"
+                      aria-label="Add to watchlist"
+                      data-imdbID="4b161eee-c0f5-4545-9c4b-8562944223ee"
+                    >
+                      <i class="fa-solid fa-circle-plus"></i>
+                      <span class="movie__btn-label">Watchlist</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="movie">
+              <div class="movie__media">
+                <img src="./images/br.png" alt="" class="movie__poster" />
+              </div>
+
+              <div class="movie__content">
+                <div class="movie__details">
+                  <h3 class="movie__title">The Dark Knight</h3>
+
+                  <div class="movie__information">
+                    <p class="movie__year">2008</p>
+                    <i class="fa-solid fa-circle"></i>
+                    <p class="movie__duration">152m</p>
+                    <i class="fa-solid fa-circle"></i>
+                    <p class="movie__genre">Action, Crime, Drama</p>
+                  </div>
+
+                  <p class="movie__plot">
+                    When a menace known as the Joker wreaks havoc and chaos on
+                    the people of Gotham, Batman, James Gordon and Harvey Dent
+                    must work together to put an end to the madness.
+                  </p>
+                </div>
+
+                <div class="movie__controls">
+                  <div class="movie__rating-box">
+                    <i class="fa-solid fa-star"></i>
+                    <p class="movie__rating">9.1</p>
+                  </div>
+
+                  <div class="movie__button-box">
+                    <button
+                      class="movie__add-watchlist-btn"
+                      aria-label="Add to watchlist"
+                      data-imdbID="4b161eee-c0f5-4545-9c4b-8562944223ee"
+                    >
+                      <i class="fa-solid fa-circle-plus"></i>
+                      <span class="movie__btn-label">Watchlist</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="movie">
+              <div class="movie__media">
+                <img src="./images/br.png" alt="" class="movie__poster" />
+              </div>
+
+              <div class="movie__content">
+                <div class="movie__details">
+                  <h3 class="movie__title">The Dark Knight</h3>
+
+                  <div class="movie__information">
+                    <p class="movie__year">2008</p>
+                    <i class="fa-solid fa-circle"></i>
+                    <p class="movie__duration">152m</p>
+                    <i class="fa-solid fa-circle"></i>
+                    <p class="movie__genre">Action, Crime, Drama</p>
+                  </div>
+
+                  <p class="movie__plot">
+                    When a menace known as the Joker wreaks havoc and chaos on
+                    the people of Gotham, Batman, James Gordon and Harvey Dent
+                    must work together to put an end to the madness.
+                  </p>
+                </div>
+
+                <div class="movie__controls">
+                  <div class="movie__rating-box">
+                    <i class="fa-solid fa-star"></i>
+                    <p class="movie__rating">9.1</p>
+                  </div>
+
+                  <div class="movie__button-box">
+                    <button
+                      class="movie__add-watchlist-btn"
+                      aria-label="Add to watchlist"
+                      data-imdbID="4b161eee-c0f5-4545-9c4b-8562944223ee"
+                    >
+                      <i class="fa-solid fa-circle-plus"></i>
+                      <span class="movie__btn-label">Watchlist</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="movie">
+              <div class="movie__media">
+                <img src="./images/br.png" alt="" class="movie__poster" />
+              </div>
+
+              <div class="movie__content">
+                <div class="movie__details">
+                  <h3 class="movie__title">The Dark Knight</h3>
+
+                  <div class="movie__information">
+                    <p class="movie__year">2008</p>
+                    <i class="fa-solid fa-circle"></i>
+                    <p class="movie__duration">152m</p>
+                    <i class="fa-solid fa-circle"></i>
+                    <p class="movie__genre">Action, Crime, Drama</p>
+                  </div>
+
+                  <p class="movie__plot">
+                    When a menace known as the Joker wreaks havoc and chaos on
+                    the people of Gotham, Batman, James Gordon and Harvey Dent
+                    must work together to put an end to the madness.
+                  </p>
+                </div>
+
+                <div class="movie__controls">
+                  <div class="movie__rating-box">
+                    <i class="fa-solid fa-star"></i>
+                    <p class="movie__rating">9.1</p>
+                  </div>
+
+                  <div class="movie__button-box">
+                    <button
+                      class="movie__add-watchlist-btn"
+                      aria-label="Add to watchlist"
+                      data-imdbID="4b161eee-c0f5-4545-9c4b-8562944223ee"
+                    >
+                      <i class="fa-solid fa-circle-plus"></i>
+                      <span class="movie__btn-label">Watchlist</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </article> -->
+          </div>
+          <div class="movies__results" data-view="watchlist">
+            <img
+              src="./images/no-data-initial.png"
+              class="movies__no-data-image"
+            />
           </div>
         </div>
         <button

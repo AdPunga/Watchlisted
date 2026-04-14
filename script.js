@@ -12,6 +12,9 @@ const moviesSearchCount = document.querySelector(".movies__search-count");
 const loadMoreBtn = document.querySelector(
   ".movies__button[data-role='load-more']",
 );
+const watchlistContainer = document.querySelector(
+  ".movies__results[data-view='watchlist']",
+);
 
 let searchQuery = "";
 let appState = "search";
@@ -67,9 +70,11 @@ async function handleSearchBtn() {
   filteredMoviesDetails = filterMovieDetails(filteredMovies);
 
   if (returnedMoviesCount > 0) {
-    document
-      .querySelector(".movies__no-data-image")
-      .classList.toggle("is-hidden");
+    const placeholderImage = document.querySelector(".movies__no-data-image");
+
+    if (placeholderImage) {
+      placeholderImage.classList.toggle("is-hidden");
+    }
 
     if (returnedMoviesCount <= 10) {
       finalIndex = returnedMoviesCount;
@@ -335,8 +340,9 @@ function renderMovie(movie) {
                     <i class="fa-solid fa-star"></i>
                     <p class="movie__rating">${imdbRating}</p>
                   </div>
-
-                  ${renderAddToWatchlistBtn(movie, imdbID)}
+                  <div class="movie__button-box">
+                    ${renderAddToWatchlistBtn(movie, imdbID)} 
+                  </div>
                 </div>
               </div>
             </article>`;
@@ -368,7 +374,6 @@ function loadMoreMovies(renderedHtml) {
 }
 
 // Local Storage
-
 function getMoviesFromLocalStorage() {
   const existingWatchlistMovies = localStorage.getItem("watchlistMovies");
 
@@ -391,34 +396,86 @@ function updateLocalStorage(watchlistArray) {
   return localStorage.setItem("watchlistMovies", stringifiedArray);
 }
 
+function renderFromLocalStorage(localStorage) {
+  return localStorage
+    .map((movie) => {
+      return renderMovie(movie);
+    })
+    .join("");
+}
+
+function renderWatchlist(moviesList) {
+  watchlistContainer.innerHTML =
+    moviesList.length > 0
+      ? moviesList
+      : `<h3 class="no-results-text">
+          Your watchlist is looking a little empty...
+        </h3>
+        <a href="./index.html"><button class="movie__add-watchlist-btn watchlist-btn"><i class="fa-solid fa-circle-plus"></i> Let's add some movies!</button></a>`;
+
+  replaceErroredPosters();
+}
+
 // Add to watchlist button
-if (appState === "search") {
-  moviesContainer.addEventListener("click", (e) => {
-    const watchlistBtn = e.target.closest(".movie__add-watchlist-btn");
-    if (!watchlistBtn) return;
+// if (appState === "search") {
+//   moviesContainer.addEventListener("click", (e) => {
+//     const watchlistBtn = e.target.closest(".movie__add-watchlist-btn");
+//     if (!watchlistBtn) return;
 
-    const currentMovieID = watchlistBtn.dataset.imdbid;
+//     const currentMovieID = watchlistBtn.dataset.imdbid;
 
+//     const currentMovie = filteredMoviesDetails.filter((movie) => {
+//       return movie.imdbID === currentMovieID;
+//     })[0];
+
+//     const updatedWatchlistArray = addToWatchlistArray(
+//       currentMovie,
+//       existingWatchlist,
+//     );
+
+//     e.target.closest(".movie__button-box").innerHTML =
+//       `<span class="movie__watchlist-status" aria-label="Already in watchlist"><i class="fa-solid fa-circle-check"></i> Watchlisted</span>`;
+
+//     updateLocalStorage(updatedWatchlistArray);
+//   });
+// }
+
+function removeFromWatchlistArray(movieID, watchlistArray) {
+  const currentMovie = watchlistArray.findIndex((item) => {
+    return item.imdbID === movieID;
+  });
+
+  watchlistArray.splice(currentMovie, 1);
+  return watchlistArray;
+}
+
+// Event listeners
+
+// Add to and remove from watchlist
+document.addEventListener("click", (e) => {
+  const watchlistBtn = e.target.closest(".movie__add-watchlist-btn");
+  if (!watchlistBtn) return;
+
+  const currentMovieID = watchlistBtn.dataset.imdbid;
+
+  if (appState === "search") {
     const currentMovie = filteredMoviesDetails.filter((movie) => {
       return movie.imdbID === currentMovieID;
     })[0];
 
-    const updatedWatchlistArray = addToWatchlistArray(
-      currentMovie,
-      existingWatchlist,
-    );
+    addToWatchlistArray(currentMovie, existingWatchlist);
 
-    watchlistBtn.innerHTML = `<i class="fa-solid fa-circle-check"></i> Added!`;
+    e.target.closest(".movie__button-box").innerHTML =
+      `<span class="movie__watchlist-status" aria-label="Already in watchlist"><i class="fa-solid fa-circle-check"></i> Watchlisted</span>`;
+  }
 
-    // setTimeout(() => {
-    //   watchlistBtn.classList.add("is-removing");
-    // }, 1000);
+  if (appState === "watchlist") {
+    removeFromWatchlistArray(currentMovieID, existingWatchlist);
+    renderWatchlist(renderFromLocalStorage(existingWatchlist));
+  }
 
-    updateLocalStorage(updatedWatchlistArray);
-  });
-}
-
-// Event listeners
+  updateLocalStorage(existingWatchlist);
+});
 
 searchForm.addEventListener("click", (e) => {
   const headerBtn = e.target.closest(".header__button");
@@ -473,9 +530,24 @@ document.querySelector(".movies__tabs").addEventListener("click", (e) => {
     ? handleElementVisibility(moviesSearchCount, "remove")
     : handleElementVisibility(moviesSearchCount, "add");
 
+  if (appState === "search" && returnedMoviesCount > 0) {
+    console.log("NOW");
+    handleElementVisibility(loadMoreBtn, "remove");
+
+    const moviesBatch = getMoviesBatch(filteredMoviesDetails, 0, finalIndex);
+
+    renderedMovies = moviesBatch
+      .map((movie) => {
+        return renderMovie(movie);
+      })
+      .join("");
+
+    renderHtml(renderedMovies);
+  }
+
   if (appState === "watchlist" || finalIndex === returnedMoviesCount) {
     handleElementVisibility(loadMoreBtn, "add");
+    renderWatchlist(renderFromLocalStorage(existingWatchlist));
   } else {
-    handleElementVisibility(loadMoreBtn, "remove");
   }
 });
