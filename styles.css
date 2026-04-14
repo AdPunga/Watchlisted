@@ -206,6 +206,8 @@ body {
 
 .movies__no-data-image {
   margin: 10rem auto;
+  width: clamp(80px, 12vw, 120px);
+  filter: brightness(1.2);
 }
 
 .movies__results {
@@ -219,15 +221,10 @@ body {
   margin: 1.125rem 0;
 }
 
-.movies__results.is-active[data-view="watchlist"] {
-  color: red;
-}
-
 .movie {
   display: grid;
   grid-template-columns: 90px 1fr;
   gap: 0.875rem;
-  /* padding: 1.125rem; */
   border-radius: 8px;
   background-color: var(--background-card);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
@@ -350,7 +347,7 @@ body {
   transition:
     background-color 0.1s ease-out,
     border 0.1s ease-out,
-    opacity 0.5s ease-out;
+    opacity 0.2s ease-out;
 }
 
 .movie__add-watchlist-btn:hover {
@@ -375,6 +372,8 @@ body {
   width: 100%;
   text-align: center;
   color: var(--medium-accent);
+  opacity: 1;
+  transition: opacity 0.2s ease-in;
 }
 
 .movies__button {
@@ -397,7 +396,7 @@ body {
 }
 
 .movies__no-data-text {
-  margin-top: 4rem;
+  margin: 10rem auto;
   font-size: clamp(var(--fs-xs), 4cqi, var(--fs-l));
   color: var(--text-disabled);
   text-align: center;

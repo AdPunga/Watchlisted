@@ -34,6 +34,8 @@ let fullMoviesInfo;
 let returnedMoviesCount;
 let existingWatchlist = getMoviesFromLocalStorage();
 
+console.log(existingWatchlist);
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Reset everything
@@ -402,7 +404,7 @@ function renderWatchlist(moviesList) {
   watchlistContainer.innerHTML =
     moviesList.length > 0
       ? moviesList
-      : `<h3 class="no-results-text">
+      : `<h3 class="movies__no-data-text">
           Your watchlist is looking a little empty...
         </h3>`;
 
@@ -427,6 +429,7 @@ document.addEventListener("click", (e) => {
 
   const currentMovie = e.target.closest(".movie");
   const currentMovieID = watchlistBtn.dataset.imdbid;
+  const currentMovieButtonBox = e.target.closest(".movie__button-box");
 
   if (appState === "search") {
     const currentMovie = filteredMoviesDetails.filter((movie) => {
@@ -435,15 +438,24 @@ document.addEventListener("click", (e) => {
 
     addToWatchlistArray(currentMovie, existingWatchlist);
 
-    e.target.closest(".movie__button-box").innerHTML =
-      `<span class="movie__watchlist-status" aria-label="Already in watchlist"><i class="fa-solid fa-circle-check"></i> Watchlisted</span>`;
+    watchlistBtn.classList.add("is-removing");
+
+    setTimeout(() => {
+      e.target.closest(".movie__button-box").innerHTML =
+        `<span class="movie__watchlist-status is-removing" aria-label="Already in watchlist"><i class="fa-solid fa-circle-check"></i> Watchlisted</span>`;
+    }, 100);
+
+    // Need to work on this
+    setTimeout(() => {
+      currentMovieButtonBox.firstElementChild.classList.remove("is-removing");
+    }, 100);
   }
 
   if (appState === "watchlist") {
     currentMovie.classList.add("is-removing");
+    removeFromWatchlistArray(currentMovieID, existingWatchlist);
 
     setTimeout(() => {
-      removeFromWatchlistArray(currentMovieID, existingWatchlist);
       renderWatchlist(renderFromLocalStorage(existingWatchlist));
     }, 500);
   }
