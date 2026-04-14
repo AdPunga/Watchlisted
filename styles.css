@@ -4,7 +4,8 @@
   --fs-s: 0.875rem;
   --fs-m: 1rem;
   --fs-l: 1.125rem;
-  --fs-xl: 2rem;
+  --fs-xl: 1.5rem;
+  --fs-xxl: 2rem;
 
   /* Accent colors */
   --strong-accent: #64748b;
@@ -70,9 +71,10 @@ body {
   display: grid;
   grid-template-rows: auto 1fr;
   max-width: 1200px;
-  height: 100vh;
+  /* height: 100vh; */
   margin: auto;
-  padding: 2rem 1.5rem;
+  padding-block: 2rem;
+  padding-inline: clamp(1.5rem, 8vw, 3.5rem);
 }
 
 /*============================================================================================================
@@ -93,13 +95,13 @@ body {
 }
 
 .header__logo {
-  font-size: clamp(2rem, 5vw, 3rem);
+  font-size: clamp(2rem, 5vw, 3.5rem);
   color: var(--text-accent);
   opacity: 0.9;
 }
 
 .header__app-title {
-  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-size: clamp(1.5rem, 4vw, 2.75rem);
   color: var(--text-accent);
 }
 
@@ -112,7 +114,7 @@ body {
   align-items: center;
   gap: 0.25rem;
   width: 100%;
-  padding: 0.1rem 0.2rem 0.1rem 1rem;
+  padding: 0.1rem 0.1rem 0.1rem 1rem;
   border: 2px solid var(--soft-accent);
   border-radius: 100vmax;
   transition: border-color 0.2s ease-out;
@@ -141,8 +143,11 @@ body {
   display: grid;
   place-items: center;
   width: 2.25rem;
+  width: clamp(1.5rem, 5vw, 2.25rem);
   aspect-ratio: 1;
   border-radius: 50%;
+  opacity: 1;
+  transition: opacity 0.1s ease-in-out;
 }
 
 .header__button:hover {
@@ -210,9 +215,12 @@ body {
 
 .movies__results.is-active {
   display: grid;
-  /* grid-template-columns: repeat(auto-fit, minmax(375px, 1fr)); */
   gap: 1.125rem 2rem;
   margin: 1.125rem 0;
+}
+
+.movies__results.is-active[data-view="watchlist"] {
+  color: red;
 }
 
 .movie {
@@ -223,9 +231,11 @@ body {
   border-radius: 8px;
   background-color: var(--background-card);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  opacity: 1;
   transition:
     background 0.2s ease-out,
-    box-shadow 0.2s ease-out;
+    box-shadow 0.2s ease-out,
+    opacity 0.2s ease-out;
 }
 
 .movie:hover {
@@ -260,12 +270,13 @@ body {
 .movie__details {
   display: flex;
   flex-direction: column;
+  justify-content: space-evenly;
   gap: 0.5rem;
 }
 
 .movie__title {
   color: var(--text-accent);
-  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  font-size: 1rem;
   font-weight: 600;
   line-height: 1.25;
 }
@@ -276,10 +287,7 @@ body {
   align-items: center;
   gap: 0.35rem;
   font-size: var(--fs-xs);
-  font-size: clamp(12px, 1.9vw, 14px);
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--super-light-accent);
-  /* outline: 1px solid red; */
+  color: var(--text-soft);
 }
 
 .movie__information i {
@@ -295,13 +303,12 @@ body {
 }
 
 .movie__plot {
-  font-size: clamp(12px, 1.9vw, 14px);
+  font-size: var(--fs-xs);
   display: -webkit-box;
   -webkit-line-clamp: 3;
   line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  color: var(--text-soft);
 }
 
 .movie__controls {
@@ -312,6 +319,12 @@ body {
 
 .movie__rating-box {
   display: none;
+}
+
+.movie__rating-box i {
+  margin-right: 0.375em;
+  font-size: var(--fs-xs);
+  color: #f2b94b;
 }
 
 .movie__button-box {
@@ -355,7 +368,7 @@ body {
 
 .movie__btn-label,
 .movie__watchlist-status {
-  font-size: clamp(12px, 1.9vw, 14px);
+  font-size: var(--fs-xs);
 }
 
 .movie__watchlist-status {
@@ -383,6 +396,13 @@ body {
   border: 1px solid var(--soft-accent);
 }
 
+.movies__no-data-text {
+  margin-top: 4rem;
+  font-size: clamp(var(--fs-xs), 4cqi, var(--fs-l));
+  color: var(--text-disabled);
+  text-align: center;
+}
+
 .is-hidden {
   display: none;
 }
@@ -391,28 +411,23 @@ body {
   opacity: 0;
 }
 
-@media (min-width: 360px) {
-  .movie {
-    outline: 1px solid red;
-  }
+/*============================================================================================================
+   MEDIA QUERIES
+=========================================================================================================== */
 
+@media (min-width: 360px) {
   .movie__rating-box {
     display: flex;
     align-items: center;
   }
 
-  .movie__rating-box i {
-    margin-right: 0.375em;
-    font-size: var(--fs-s);
-    color: #f2b94b;
-  }
-
   .movie__rating {
-    font-size: clamp(12px, 1.9vw, 14px);
+    font-size: var(--fs-xs);
   }
 
   .movie__add-watchlist-btn {
     width: auto;
+    padding-inline: 0.7rem;
   }
 
   .movie__watchlist-status {
@@ -422,8 +437,15 @@ body {
 
 @media (min-width: 480px) {
   .movie {
-    grid-template-columns: 120px 1fr;
-    outline: 1px solid blue;
+    grid-template-columns: clamp(120px, 27cqi, 150px) 1fr;
+  }
+
+  .movie__content {
+    margin-right: 0.5rem;
+  }
+
+  .movie__title {
+    font-size: clamp(var(--fs-l), 4cqi, var(--fs-xl));
   }
 
   .movie__information i:last-of-type {
@@ -433,15 +455,67 @@ body {
   .movie__genre {
     width: auto;
   }
+
+  .movie__button-box {
+    height: clamp(1.75rem, 6.4cqi, 2rem);
+  }
+
+  .movie__add-watchlist-btn {
+    width: auto;
+    padding-inline: 1rem;
+  }
+
+  .movie__information,
+  .movie__plot,
+  .movie__rating-box i,
+  .movie__rating,
+  .movie__btn-label,
+  .movie__watchlist-status {
+    font-size: clamp(var(--fs-xs), 2.6cqi, var(--fs-s));
+  }
 }
 
 @media (min-width: 770px) {
   .movie {
-    grid-template-columns: 150px 1fr;
-    outline: 1px solid burlywood;
+    grid-template-columns: clamp(120px, 17cqi, 170px) 1fr;
   }
 
   .movies__results.is-active {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(305px, 1fr));
+  }
+
+  .movie__content {
+    margin-right: 0;
+  }
+
+  .movie__title {
+    font-size: clamp(var(--fs-m), 2.2cqi, var(--fs-xl));
+  }
+
+  .movie__information,
+  .movie__plot,
+  .movie__rating-box i,
+  .movie__rating,
+  .movie__btn-label,
+  .movie__watchlist-status {
+    font-size: clamp(var(--fs-xs), 1.3cqi, var(--fs-s));
+  }
+
+  .movie__button-box {
+    height: clamp(1.75rem, 3.5cqi, 2rem);
+  }
+
+  .movie__add-watchlist-btn {
+    padding-inline: clamp(0.225rem, 1.5cqi, 1rem);
+  }
+}
+
+@media (min-width: 1024px) {
+  .movies__results.is-active {
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  }
+
+  .movie__content {
+    margin-right: clamp(0rem, 1.5cqi, 1rem);
   }
 }
