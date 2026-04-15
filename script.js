@@ -34,8 +34,6 @@ let fullMoviesInfo;
 let returnedMoviesCount;
 let existingWatchlist = getMoviesFromLocalStorage();
 
-console.log(existingWatchlist);
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Reset everything
@@ -57,7 +55,23 @@ async function handleSearchBtn() {
   searchQuery = searchMovieField.value.split(" ").join("+");
   const fetchedMovies = await fetchMoviesData(searchQuery);
 
-  if (fetchedMovies.length === 0) return;
+  if (fetchedMovies.length === 0) {
+    moviesContainer.innerHTML = `<h3 class="movies__no-data-text">
+          No results found for "${searchQuery}". Please try a different title.
+        </h3>`;
+
+    if (appState != "search") {
+      appState = "search";
+
+      document.querySelectorAll("[data-view]").forEach((element) => {
+        element.classList.toggle(
+          "is-active",
+          element.dataset.view === appState,
+        );
+      });
+    }
+    return;
+  }
 
   const sortedMovies = filterAndSortMovies(fetchedMovies);
   fullMoviesInfo = await fetchMovieDetails(sortedMovies);
@@ -76,7 +90,6 @@ async function handleSearchBtn() {
       finalIndex = returnedMoviesCount;
     } else if (returnedMoviesCount > 10) {
       finalIndex = 10;
-      // handleElementVisibility(loadMoreBtn, "remove");
     }
 
     const moviesBatch = getMoviesBatch(
@@ -90,21 +103,12 @@ async function handleSearchBtn() {
     if (appState != "search") {
       appState = "search";
 
-      document
-        .querySelector('.movies__results[data-view="search"]')
-        .classList.add("is-active");
-
-      document
-        .querySelector('.movies__results[data-view="watchlist"]')
-        .classList.remove("is-active");
-
-      document
-        .querySelector('.movies__tab[data-view="search"]')
-        .classList.add("is-active");
-
-      document
-        .querySelector('.movies__tab[data-view="watchlist"]')
-        .classList.remove("is-active");
+      document.querySelectorAll("[data-view]").forEach((element) => {
+        element.classList.toggle(
+          "is-active",
+          element.dataset.view === appState,
+        );
+      });
     }
 
     renderedMovies = moviesBatch
@@ -404,7 +408,8 @@ function renderWatchlist(moviesList) {
   watchlistContainer.innerHTML =
     moviesList.length > 0
       ? moviesList
-      : `<h3 class="movies__no-data-text">
+      : `
+      <h3 class="movies__no-data-text watchlist-view">
           Your watchlist is looking a little empty...
         </h3>`;
 
@@ -429,7 +434,6 @@ document.addEventListener("click", (e) => {
 
   const currentMovie = e.target.closest(".movie");
   const currentMovieID = watchlistBtn.dataset.imdbid;
-  const currentMovieButtonBox = e.target.closest(".movie__button-box");
 
   if (appState === "search") {
     const currentMovie = filteredMoviesDetails.filter((movie) => {
@@ -438,17 +442,8 @@ document.addEventListener("click", (e) => {
 
     addToWatchlistArray(currentMovie, existingWatchlist);
 
-    watchlistBtn.classList.add("is-removing");
-
-    setTimeout(() => {
-      e.target.closest(".movie__button-box").innerHTML =
-        `<span class="movie__watchlist-status is-removing" aria-label="Already in watchlist"><i class="fa-solid fa-circle-check"></i> Watchlisted</span>`;
-    }, 100);
-
-    // Need to work on this
-    setTimeout(() => {
-      currentMovieButtonBox.firstElementChild.classList.remove("is-removing");
-    }, 100);
+    e.target.closest(".movie__button-box").innerHTML =
+      `<span class="movie__watchlist-status" aria-label="Already in watchlist"><i class="fa-solid fa-circle-check"></i> Watchlisted</span>`;
   }
 
   if (appState === "watchlist") {
