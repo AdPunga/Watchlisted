@@ -224,7 +224,7 @@ body {
   border: none;
   outline: none;
   font-size: clamp(12px, 1.9vw, 14px);
-  /* font-size: 1rem; */
+  font-size: 16px;
   background-color: inherit;
 }
 
