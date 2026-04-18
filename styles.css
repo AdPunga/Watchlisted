@@ -122,7 +122,7 @@ body {
 
 .header__top {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: auto 1fr auto;
   min-width: 0;
   width: 100%;
 }
