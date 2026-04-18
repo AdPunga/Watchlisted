@@ -133,6 +133,7 @@ async function handleSearchBtn() {
         : "add",
     );
   }
+  searchMovieField.blur();
 }
 
 async function handleLoadMoreBtn() {
@@ -551,7 +552,7 @@ document.querySelector(".movies__tabs").addEventListener("click", (e) => {
     : handleElementVisibility(moviesSearchCount, "add");
 
   if (appState === "search") {
-    searchMovieField.focus();
+    // searchMovieField.focus();
 
     if (returnedMoviesCount > 0) {
       handleElementVisibility(loadMoreBtn, "remove");
