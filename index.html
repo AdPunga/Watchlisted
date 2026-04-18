@@ -19,12 +19,25 @@
     <link rel="stylesheet" href="./styles.css" />
     <title>Watchlisted | Solo Project</title>
   </head>
-  <body class="darkmode">
+  <body>
     <div class="wrapper">
       <header class="header">
-        <div class="header__logo-container">
-          <i class="fa-solid fa-film header__logo"></i>
-          <h1 class="header__app-title">Watch<span>listed</span></h1>
+        <div class="header__top">
+          <div class="header__logo-container">
+            <i class="fa-solid fa-film header__logo"></i>
+          </div>
+
+          <div class="header__title-container">
+            <h1 class="header__app-title">Watch<span>listed</span></h1>
+          </div>
+
+          <div class="header__theme-container">
+            <button class="header__theme-btn">
+              <span class="header__theme-switcher">
+                <i class="fa-regular fa-sun" data-role="switch-theme"></i>
+              </span>
+            </button>
+          </div>
         </div>
 
         <form class="header__search-control">

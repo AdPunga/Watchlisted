@@ -1,5 +1,9 @@
 "use strict";
 
+const themeIconIndicator = document.querySelector(
+  ".fa-regular[data-role='switch-theme']",
+);
+const themeSwitchBtn = document.querySelector(".header__theme-btn");
 const searchForm = document.querySelector(".header__search-control");
 const headerButtonContainer = document.querySelector(
   ".header__button-container",
@@ -425,7 +429,41 @@ function removeFromWatchlistArray(movieID, watchlistArray) {
   return watchlistArray;
 }
 
+// Dark Mode
+function getAppTheme() {
+  const appTheme = localStorage.getItem("darkMode");
+
+  return appTheme;
+}
+
+function setAppTheme(localStorageTheme) {
+  localStorageTheme === "active" ? enableDarkMode() : disableDarkMode();
+}
+
+function enableDarkMode() {
+  document.body.classList.add("darkmode");
+  document.querySelector(".header__theme-switcher").classList.add("dark");
+
+  themeIconIndicator.classList.remove("fa-sun");
+  themeIconIndicator.classList.add("fa-moon");
+  localStorage.setItem("darkMode", "active");
+}
+
+function disableDarkMode() {
+  document.body.classList.remove("darkmode");
+  document.querySelector(".header__theme-switcher").classList.remove("dark");
+
+  themeIconIndicator.classList.remove("fa-moon");
+  themeIconIndicator.classList.add("fa-sun");
+  localStorage.setItem("darkMode", null);
+}
+
 // Event listeners
+
+// Set theme
+document.addEventListener("DOMContentLoaded", () => {
+  setAppTheme(getAppTheme());
+});
 
 // Add to and remove from watchlist
 document.addEventListener("click", (e) => {
@@ -536,4 +574,9 @@ document.querySelector(".movies__tabs").addEventListener("click", (e) => {
     handleElementVisibility(loadMoreBtn, "add");
     renderWatchlist(renderFromLocalStorage(existingWatchlist));
   }
+});
+
+themeSwitchBtn.addEventListener("click", (e) => {
+  const currentTheme = getAppTheme();
+  currentTheme === "active" ? disableDarkMode() : enableDarkMode();
 });
