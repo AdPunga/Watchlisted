@@ -124,7 +124,7 @@ body {
 .header__top {
   display: grid;
   grid-template-columns: auto 1fr auto;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .header__logo-container {
@@ -165,7 +165,7 @@ body {
 .header__theme-btn {
   display: flex;
   width: 44px;
-  margin-top: 0.7rem;
+  margin-top: 0.75rem;
   padding: 3px;
   border-radius: 10em;
   background-color: var(--light-accent);
@@ -297,7 +297,7 @@ body {
 
 .movies__no-data-image {
   margin: 8rem auto;
-  width: clamp(110px, 12vw, 120px);
+  width: clamp(120px, 15vw, 140px);
   filter: brightness(1.15);
 }
 
@@ -472,9 +472,9 @@ body {
 
 .movies__button {
   display: block;
-  padding-block: clamp(0.4em, 1.5vw, 0.8em);
+  padding-block: 0.5em;
   margin-block: 1rem;
-  font-size: clamp(10px, 2vw, 12px);
+  font-size: clamp(var(--fs-s), 2vw, var(--fs-m));
   color: var(--text-accent);
   font-weight: 600;
   background-color: var(--super-light-accent);
