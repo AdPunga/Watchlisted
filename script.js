@@ -56,7 +56,7 @@ async function handleSearchBtn() {
 
   resetVariables();
 
-  searchQuery = searchMovieField.value.split(" ").join("+");
+  searchQuery = searchMovieField.value.trimEnd().split(" ").join("+");
   const fetchedMovies = await fetchMoviesData(searchQuery);
 
   if (fetchedMovies.length === 0) {
