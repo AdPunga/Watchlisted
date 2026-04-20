@@ -5,9 +5,6 @@ const themeIconIndicator = document.querySelector(
 );
 const themeSwitchBtn = document.querySelector(".header__theme-btn");
 const searchForm = document.querySelector(".header__search-control");
-const headerButtonContainer = document.querySelector(
-  ".header__button-container",
-);
 const searchMovieField = document.querySelector(".header__search-field");
 const removeBtn = document.querySelector(".header__button[data-role='remove']");
 const moviesContainer = document.querySelector(
@@ -64,7 +61,7 @@ async function handleSearchBtn() {
           No results found for "${searchQuery}". Please try a different title.
         </h3>`;
 
-    if (appState != "search") {
+    if (appState !== "search") {
       appState = "search";
 
       document.querySelectorAll("[data-view]").forEach((element) => {
@@ -104,7 +101,7 @@ async function handleSearchBtn() {
 
     moviesSearchCount.textContent = `SHOWING ${returnedMoviesCount} MATCHES FOR '${searchMovieField.value.toUpperCase()}'`;
 
-    if (appState != "search") {
+    if (appState !== "search") {
       appState = "search";
 
       document.querySelectorAll("[data-view]").forEach((element) => {
@@ -133,6 +130,7 @@ async function handleSearchBtn() {
         : "add",
     );
   }
+  searchMovieField.blur();
 }
 
 async function handleLoadMoreBtn() {
@@ -247,7 +245,7 @@ async function fetchMovieDetails(sortedMovies) {
     return data;
   });
 
-  return await Promise.all(movieInformation);
+  return Promise.all(movieInformation);
 }
 
 // Step 4 - filter out documentaries, shorts and movies without a specified duration
@@ -268,14 +266,14 @@ function filterMovieDetails(filteredMovies) {
     const renderedPoster = Poster === "N/A" ? "/images/noPoster.png" : Poster;
 
     return {
-      Title: Title,
-      imdbRating: imdbRating,
-      Year: Year,
-      Runtime: Runtime,
-      Genre: Genre,
-      Plot: Plot,
+      Title,
+      imdbRating,
+      Year,
+      Runtime,
+      Genre,
+      Plot,
       Poster: renderedPoster,
-      imdbID: imdbID,
+      imdbID,
     };
   });
 }
@@ -361,6 +359,10 @@ function renderHtml(renderedMoviesObject) {
 // Step 10 - Replace missing posters
 function replaceErroredPosters() {
   document.querySelectorAll(".movie__poster").forEach((img) => {
+    if (img.dataset.errorHandled) return;
+
+    img.dataset.errorHandled = "true";
+
     img.addEventListener("error", (e) => {
       e.target.src = "/images/noPoster.png";
     });
@@ -551,8 +553,6 @@ document.querySelector(".movies__tabs").addEventListener("click", (e) => {
     : handleElementVisibility(moviesSearchCount, "add");
 
   if (appState === "search") {
-    searchMovieField.focus();
-
     if (returnedMoviesCount > 0) {
       handleElementVisibility(loadMoreBtn, "remove");
       const moviesBatch = getMoviesBatch(filteredMoviesDetails, 0, finalIndex);
@@ -576,7 +576,7 @@ document.querySelector(".movies__tabs").addEventListener("click", (e) => {
   }
 });
 
-themeSwitchBtn.addEventListener("click", (e) => {
+themeSwitchBtn.addEventListener("click", () => {
   const currentTheme = getAppTheme();
   currentTheme === "active" ? disableDarkMode() : enableDarkMode();
 });
